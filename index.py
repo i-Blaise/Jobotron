@@ -1,14 +1,25 @@
 from job_scrapper import jobScrapper
+from dataLib import retrieveData, countData, deleteAllData
 
 
 
-# document_list = [
-#     { "name" : "Mongo's Burgers" },
-#     { "name" : "Mongo's Pizza" },
-#     { "name" : "Mongo's Tacos" }
-#  ]
+def startPoint():
+    if countData() >= 4:
+        return retrieveData()
 
-# name = { "name" : "Mongo's Tacos" }
+    
+# print(startPoint())
+print(countData())
+# print(deleteAllData())
 
-# print(type(name))
+
+
+
+
+
+
+
+
 print(jobScrapper())
+
+# print(retrieveData())

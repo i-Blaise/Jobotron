@@ -12,7 +12,7 @@ try:
     collection = database["jobsToPost"]
     # result = collection.insert_one({ "name" : "value" })
     # print(result.acknowledged)
-    client.close()
+    # client.close()
 except Exception as e:
     raise Exception(
         "The following error occurred: ", e)

@@ -2,7 +2,7 @@ import requests
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pprint
-import saveData
+import dataLib
 
 def jobScrapper():
     # url = "https://www.ghanajob.com/job-vacancies-search-ghana/?utm_source=site&utm_medium=link&utm_campaign=search_split&utm_term=all_jobs&f%5B0%5D=im_field_offre_metiers%3A31"
@@ -32,7 +32,7 @@ def jobScrapper():
         job_dict[jobName] = jobLink
         # print("https://jobgether.com/"+tag.get('href') + " Name of Job: " + tag.get('title'))
 
-    return saveData.saveJobs(job_dict)
+    return dataLib.saveJobs(job_dict)
     # return pprint.pprint(job_dict)
 
 # print(jobScrapper())
