@@ -35,9 +35,7 @@ def retrieveData():
 def countData():
     filter_query = {"numberTimesPosted": {"$lte": 2}}
     results = collection.estimated_document_count(filter_query)
-    client.close()
-    print(results)
-    # return results
+    return results
 
 
 def deleteAllData():

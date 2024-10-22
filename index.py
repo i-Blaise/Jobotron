@@ -4,12 +4,15 @@ from dataLib import retrieveData, countData, deleteAllData
 
 
 def startPoint():
-    if countData() >= 4:
-        return retrieveData()
+    count = countData()
+    if count >= 4:
+        job = retrieveData()
+        link = job['name']
+        return link
 
     
-# print(startPoint())
-print(countData())
+print(startPoint())
+# print(countData())
 # print(deleteAllData())
 
 
@@ -20,6 +23,6 @@ print(countData())
 
 
 
-print(jobScrapper())
+# print(jobScrapper())
 
 # print(retrieveData())
