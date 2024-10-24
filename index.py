@@ -1,4 +1,4 @@
-from job_scrapper import jobScrapper
+from job_scrapper import jobScrapper, scrapJobDetails
 from dataLib import retrieveData, countData, deleteAllData
 
 
@@ -11,7 +11,7 @@ def startPoint():
         return link
 
     
-print(startPoint())
+print(scrapJobDetails())
 # print(countData())
 # print(deleteAllData())
 

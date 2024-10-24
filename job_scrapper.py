@@ -35,4 +35,38 @@ def jobScrapper():
     return dataLib.saveJobs(job_dict)
     # return pprint.pprint(job_dict)
 
-# print(jobScrapper())
+
+
+def scrapJobDetails(url = None):
+    # url = "https://jobwebghana.com/jobs/field-sales-agents-jiji-ghana/"
+    url = "https://jobwebghana.com/jobs/promoters-rmg-ghana-limited/"
+    key_titles = ['job summary', 'purpose statement', 'about the role', 'job description', 'join our team']
+    qualification_titles = ['qualifications', '']
+
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    # jobDetail = soup.find(_class="how-to-apply")
+    jobDetail = soup.font.contents
+
+    # return jobDetail
+
+    for i in range(len(jobDetail)):
+        title = jobDetail[i].text.lower()
+        if title == 'job summary':
+            print(jobDetail[i+2].text)
+
+
+
+
+    # for key, value in jobDetail.items():
+    #     title = value.text.lower()
+    #     if title == 'key responsibilities':
+    #         print(key)
+
+    # return jobDetail
+
+
+
+
+
+# print(scrapJobDetails())
