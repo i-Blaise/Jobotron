@@ -1,5 +1,6 @@
 from job_scrapper import jobScrapper, scrapJobDetails
 from dataLib import retrieveData, countData, deleteAllData
+from gemini_ai import AI_Summary
 
 
 
@@ -10,8 +11,12 @@ def startPoint():
         link = job['name']
         return link
 
+
+
     
-print(scrapJobDetails())
+jobDetails = scrapJobDetails()
+# print(jobDetails["link"])
+print(AI_Summary(jobDetails["jobDetail"], jobDetails["link"]))
 # print(countData())
 # print(deleteAllData())
 

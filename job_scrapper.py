@@ -46,14 +46,19 @@ def scrapJobDetails(url = None):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
     # jobDetail = soup.find(_class="how-to-apply")
-    jobDetail = soup.font.contents
+    jobDetail = soup.font.text
 
-    # return jobDetail
+    result = {
+        "jobDetail": jobDetail,
+        "link": url
+    }
 
-    for i in range(len(jobDetail)):
-        title = jobDetail[i].text.lower()
-        if title == 'job summary':
-            print(jobDetail[i+2].text)
+    return result
+
+    # for i in range(len(jobDetail)):
+    #     title = jobDetail[i].text.lower()
+    #     if title == 'job summary':
+    #         print(jobDetail[i+2].text)
 
 
 
