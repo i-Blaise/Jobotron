@@ -16,21 +16,57 @@ client_secret = 'hFSS8dSCesfv2xG4FAoKch6HRkjABeuhN-SUPkn0z3avt0ZZK_'
 # auth = tweepy.OAuth1UserHandler(consumer_key, consumer_secret, access_token, access_token_secret)
 # api = tweepy.API(auth)
 
-client = tweepy.Client(
-    bearer_token,
-    api_key, 
-    api_secret, 
-    access_token, 
-    access_token_secret
-)
+
+import tweepy
+
+def postJob(post):
+    try:
+        # Initialize the client with bearer token and other credentials
+        client = tweepy.Client(
+            bearer_token,
+            api_key, 
+            api_secret, 
+            access_token, 
+            access_token_secret
+        )
+
+        # Set up OAuth1UserHandler for authentication
+        auth = tweepy.OAuth1UserHandler(api_key, api_secret, access_token, access_token_secret)
+        api = tweepy.API(auth)
+
+        # Attempt to create a tweet
+        client.create_tweet(text = post)
+        print("Tweet posted successfully!")
+        
+    except tweepy.TweepyException as e:
+        print(f"An error occurred: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
 
-auth = tweepy.OAuth1UserHandler(api_key, api_secret, access_token, access_token_secret)
-api = tweepy.API(auth)
 
-client.create_tweet(
-    text="Hello World!"
-)
+
+
+
+
+
+
+# def postJob(post):
+#     client = tweepy.Client(
+#         bearer_token,
+#         api_key, 
+#         api_secret, 
+#         access_token, 
+#         access_token_secret
+#     )
+
+
+#     auth = tweepy.OAuth1UserHandler(api_key, api_secret, access_token, access_token_secret)
+#     api = tweepy.API(auth)
+
+#     client.create_tweet(
+#         text = post
+#     )
 
 # Post a tweet
 # tweet = "Hello, world! :)"

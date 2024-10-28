@@ -37,9 +37,9 @@ def jobScrapper():
 
 
 
-def scrapJobDetails(url = None):
+def scrapJobDetails(url):
     # url = "https://jobwebghana.com/jobs/field-sales-agents-jiji-ghana/"
-    url = "https://jobwebghana.com/jobs/promoters-rmg-ghana-limited/"
+    # url = "https://jobwebghana.com/jobs/promoters-rmg-ghana-limited/"
     key_titles = ['job summary', 'purpose statement', 'about the role', 'job description', 'join our team']
     qualification_titles = ['qualifications', '']
 
