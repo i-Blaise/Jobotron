@@ -38,6 +38,11 @@ def countData():
     return results
 
 
+def updatePostedJob(job):
+    filter_query = {"name": job['name'], "link": job['link']}
+    
+
+
 def deleteAllData():
     filter_query = {"numberTimesPosted": {"$lte": 2}}
     results = collection.delete_many(filter_query)

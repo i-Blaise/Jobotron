@@ -12,7 +12,8 @@ def startPoint():
         jobLink = job['link']
         jobDetails = scrapJobDetails(jobLink)
         twitterPost = AI_Summary(jobDetails["jobDetail"], jobDetails["link"])
-        print(postJob(twitterPost))
+        print(twitterPost)
+        # print(postJob(twitterPost))
 
 
 

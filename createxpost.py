@@ -36,12 +36,27 @@ def postJob(post):
 
         # Attempt to create a tweet
         client.create_tweet(text = post)
-        print("Tweet posted successfully!")
+        response = "Tweet posted successfully!"
+        results = {
+            "status": True,
+            "response": response
+        }
+        return results
         
     except tweepy.TweepyException as e:
-        print(f"An error occurred: {e}")
+        response = f"An error occurred: {e}"
+        results = {
+            "status": False,
+            "response": response
+        }
+        return results
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        response = f"Unexpected error: {e}"
+        results = {
+            "status": False,
+            "response": response
+        }
+        return results
 
 
 

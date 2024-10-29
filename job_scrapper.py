@@ -3,6 +3,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pprint
 import dataLib
+from logs import logProcesses
 
 def jobScrapper():
     # url = "https://www.ghanajob.com/job-vacancies-search-ghana/?utm_source=site&utm_medium=link&utm_campaign=search_split&utm_term=all_jobs&f%5B0%5D=im_field_offre_metiers%3A31"
@@ -37,41 +38,66 @@ def jobScrapper():
 
 
 
+# def scrapJobDetails(url):
+#     response = requests.get(url)
+#     soup = BeautifulSoup(response.text, 'html.parser')
+#     # jobDetail = soup.find(_class="how-to-apply")
+#     jobDetail = soup.font.text
+
+#     result = {
+#         "jobDetail": jobDetail,
+#         "link": url
+#     }
+
+#     return result
+
+
+
+
+
 def scrapJobDetails(url):
-    # url = "https://jobwebghana.com/jobs/field-sales-agents-jiji-ghana/"
-    # url = "https://jobwebghana.com/jobs/promoters-rmg-ghana-limited/"
-    key_titles = ['job summary', 'purpose statement', 'about the role', 'job description', 'join our team']
-    qualification_titles = ['qualifications', '']
+    try:
+        # Attempt to get the page content
+        response = requests.get(url)
+        response.raise_for_status()  # Raises an HTTPError if the request was unsuccessful
 
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    # jobDetail = soup.find(_class="how-to-apply")
-    jobDetail = soup.font.text
+        # Parse the page content
+        soup = BeautifulSoup(response.text, 'html.parser')
+        jobDetail = soup.font.text if soup.font else "Job details not found"
 
-    result = {
-        "jobDetail": jobDetail,
-        "link": url
-    }
+        # Prepare result dictionary
+        result = {
+            "status": True,
+            "jobDetail": jobDetail,
+            "link": url,
+            "response": "Job Details scrapped successfully"
+        }
+        logProcesses(result["response"])
+        return result
 
-    return result
+    except requests.exceptions.RequestException as e:
+        # print(f"Request error: {e}")
+        result = {
+            "status": False,
+            "response": f"Request error: {e}"
+        }
+        logProcesses(result["response"])
+        return result
+    except AttributeError as e:
+        # print(f"Parsing error: {e}")
+        result = {
+            "status": False,
+            "response": f"Parsing error: : {e}"
+        }
+        logProcesses(result["response"])
+        return result
+    except Exception as e:
+        # print(f"An unexpected error occurred: {e}")
+        result = {
+            "status": False,
+            "response": f"An unexpected error occurred: {e}"
+        }
+        logProcesses(result["response"])
+        return result
 
-    # for i in range(len(jobDetail)):
-    #     title = jobDetail[i].text.lower()
-    #     if title == 'job summary':
-    #         print(jobDetail[i+2].text)
-
-
-
-
-    # for key, value in jobDetail.items():
-    #     title = value.text.lower()
-    #     if title == 'key responsibilities':
-    #         print(key)
-
-    # return jobDetail
-
-
-
-
-
-# print(scrapJobDetails())
+    return None  # Return None if an error occurs
