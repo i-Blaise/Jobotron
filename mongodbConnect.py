@@ -4,7 +4,8 @@ import urllib.parse
 PASSWORD = urllib.parse.quote_plus('bl@!!se-3296')
 USERNAME = urllib.parse.quote_plus('Jobotron-admin')
 
-uri = f"mongodb+srv://{USERNAME}:{PASSWORD}@jobotron.1uucl.mongodb.net/?retryWrites=true&w=majority&appName=Jobotron"
+uri = f"mongodb+srv://Jobotron-admin:{PASSWORD}@jobotron.1uucl.mongodb.net/?retryWrites=true&w=majority&appName=Jobotron"
+# uri = f"mongodb+srv://{USERNAME}:{PASSWORD}@jobotron.1uucl.mongodb.net/?retryWrites=true&w=majority&appName=Jobotron"
 client = MongoClient(uri)
 
 try:

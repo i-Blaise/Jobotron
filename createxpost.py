@@ -1,4 +1,5 @@
 import tweepy
+from logs import logProcesses
 
 access_token = "1793711715835666432-az5RXZ6j1h8AnaKFERGablXGZjYIws"
 access_token_secret = "RLWysRilQQDSer3HndFE16AFEibM6LvAlu7vaBu0AzISb"
@@ -41,6 +42,7 @@ def postJob(post):
             "status": True,
             "response": response
         }
+        logProcesses(results["response"])
         return results
         
     except tweepy.TweepyException as e:
@@ -49,6 +51,7 @@ def postJob(post):
             "status": False,
             "response": response
         }
+        logProcesses(results["response"])
         return results
     except Exception as e:
         response = f"Unexpected error: {e}"
@@ -56,6 +59,7 @@ def postJob(post):
             "status": False,
             "response": response
         }
+        logProcesses(results["response"])
         return results
 
 

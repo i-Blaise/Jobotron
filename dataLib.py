@@ -1,5 +1,6 @@
 # import mongodbConnect
 from mongodbConnect import collection, client
+from logs import logProcesses
 # from ..job_scrapper import jobScrapper
 
 def saveJobs(scrappedJobs):
@@ -25,26 +26,37 @@ def saveJobs(scrappedJobs):
 
 
 def retrieveData():
-    filter_query = {"numberTimesPosted": {"$lte": 2}}
-    update_query = {"numberTimesPosted": 1}
-    results = collection.find_one(filter_query)
-    return results
+    lessThanOne = {"numberTimesPosted": {"$eq": 0}}
+    postedOnceOrTwice = {"$or": [{"numberTimesPosted": {"$eq": 1}}, {"numberTimesPosted": {"$eq": 2}}]}
+    if collection.estimated_document_count(lessThanOne) > 0:
+        results = collection.find_one(lessThanOne)
+        return results
+    elif collection.estimated_document_count(postedOnceOrTwice) > 0:
+        results = collection.find_one(postedOnceOrTwice)
+        return results
 
 
 
 def countData():
     filter_query = {"numberTimesPosted": {"$lte": 2}}
     results = collection.estimated_document_count(filter_query)
-    return results
+    print(results)
+    # return results
 
 
 def updatePostedJob(job):
     filter_query = {"name": job['name'], "link": job['link']}
+    update_operation = { "$inc": {"numberTimesPosted": 1} }
+    result = collection.update_one(filter_query, update_operation)
+    return result.acknowledged
+
+
     
 
 
 def deleteAllData():
     filter_query = {"numberTimesPosted": {"$lte": 2}}
     results = collection.delete_many(filter_query)
+    logProcesses(results.acknowledged)
     return results.acknowledged
 # print(saveJobs())
