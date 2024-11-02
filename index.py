@@ -4,6 +4,7 @@ from gemini_ai import AI_Summary
 from createxpost import postJob
 import schedule
 import time
+from logs import logProcesses
 
 
 
@@ -18,6 +19,13 @@ def startPoint():
             postResult = postJob(twitterPost)
             if postResult["status"]:
                 updatePostedJob(job)
+
+    else:
+        result = {
+            "status": False,
+            "response": "DB results less than 4 documents"
+        }
+        logProcesses(result['response'])
         # print(twitterPost)
         # print(postJob(twitterPost))
 
