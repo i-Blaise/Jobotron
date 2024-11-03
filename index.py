@@ -30,7 +30,7 @@ def startPoint():
         # print(postJob(twitterPost))
 
 
-
+print("Hello World")
 
 # startPoint()
     
@@ -42,15 +42,15 @@ def startPoint():
 
 
 # Schedule the job to run at four specific times each day
-schedule.every().day.at("09:00").do(startPoint)
-schedule.every().day.at("12:00").do(startPoint)
-schedule.every().day.at("15:00").do(startPoint)
-schedule.every().day.at("18:00").do(startPoint)
+# schedule.every().day.at("09:00").do(startPoint)
+# schedule.every().day.at("12:00").do(startPoint)
+# schedule.every().day.at("15:00").do(startPoint)
+# schedule.every().day.at("18:00").do(startPoint)
 # schedule.every(5).seconds.do(countData)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
 
 
 # print(jobScrapper())
