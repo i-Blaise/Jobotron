@@ -40,8 +40,8 @@ def retrieveData():
 def countData():
     filter_query = {"numberTimesPosted": {"$lte": 2}}
     results = collection.estimated_document_count(filter_query)
-    print(results)
-    # return results
+    # print(results)
+    return results
 
 
 def updatePostedJob(job):
@@ -57,6 +57,13 @@ def updatePostedJob(job):
 def deleteAllData():
     filter_query = {"numberTimesPosted": {"$lte": 2}}
     results = collection.delete_many(filter_query)
-    logProcesses(results.acknowledged)
+    # logProcesses(results.acknowledged) Log Later
+    return results.acknowledged
+
+
+def deleteOneData(jobID):
+    filter_query = {"_id": jobID}
+    results = collection.delete_one(filter_query)
+    # logProcesses(results.acknowledged) Log later
     return results.acknowledged
 # print(saveJobs())

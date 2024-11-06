@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import pprint
 import dataLib
 from logs import logProcesses
+from gemini_ai import extractClosingDate
 
 def jobScrapper():
     # url = "https://www.ghanajob.com/job-vacancies-search-ghana/?utm_source=site&utm_medium=link&utm_campaign=search_split&utm_term=all_jobs&f%5B0%5D=im_field_offre_metiers%3A31"
@@ -57,6 +58,8 @@ def jobScrapper():
 
 def scrapJobDetails(url):
     try:
+        # url = "https://jobwebghana.com/jobs/deputy-director-supply-chain-management-komfo-anokye-teaching-hospital/"
+        # url = "https://jobwebghana.com/jobs/accountant-reputable-private-hospital-3/"
         # Attempt to get the page content
         response = requests.get(url)
         response.raise_for_status()  # Raises an HTTPError if the request was unsuccessful
@@ -64,12 +67,18 @@ def scrapJobDetails(url):
         # Parse the page content
         soup = BeautifulSoup(response.text, 'html.parser')
         jobDetail = soup.font.text if soup.font else "Job details not found"
+        applyDetails = soup.find(size="3").text if soup.find(size="3") else "No details found"
+        # return applyDetails
+        closingDate = extractClosingDate(applyDetails)
+        # return closingDate
 
         # Prepare result dictionary
         result = {
             "status": True,
             "jobDetail": jobDetail,
+            "howToApply": applyDetails,
             "link": url,
+            "closingDate": closingDate,
             "response": "Job Details scrapped successfully"
         }
         logProcesses(result["response"])
