@@ -24,11 +24,16 @@ def jobTips():
     return response.text
 
 
+# def adviceAndMotivation():
+#     genai.configure(api_key = APIKey)
+#     model = genai.GenerativeModel("gemini-1.5-flash")
+#     response = model.generate_content("Write a motivational tweet for job seekers in Ghana that encourages persistence in the job hunt and highlights the importance of staying positive or general motivation. Add relevant hashtags and #Jobotron. This tweet should be under 280 characters long")
+#     return response.text
+
 
 def adviceAndMotivation():
     genai.configure(api_key = APIKey)
     model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content("Write a motivational tweet for job seekers in Ghana that encourages persistence in the job hunt and highlights the importance of staying positive or general motivation. Add relevant hashtags and #Jobotron. This tweet should be under 280 characters long")
+    response = model.generate_content("Write a motivational on various topics of your choosing for a tweet for job seekers in Ghana . Add relevant hashtags and #Jobotron. This tweet should be under 280 characters long")
     return response.text
-
 

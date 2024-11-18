@@ -100,11 +100,12 @@ def tweetMotivations():
 
 
 # print(tweetJobTips())
-# print(adviceAndMotivation())
+print(adviceAndMotivation())
 
 # print(startPoint())
 # print(scrapJobDetails())
 # print(jobScrapper())
+# print(retrieveData())
 
 # startPoint()
     
@@ -116,22 +117,22 @@ def tweetMotivations():
 
 
 # Schedule the job to run at four specific times each day
-schedule.every().day.at("09:00").do(startPoint)
-schedule.every().day.at("12:00").do(startPoint)
-schedule.every().day.at("15:00").do(startPoint)
-schedule.every().day.at("18:00").do(startPoint)
+# schedule.every().day.at("09:00").do(startPoint)
+# schedule.every().day.at("12:00").do(startPoint)
+# schedule.every().day.at("15:00").do(startPoint)
+# schedule.every().day.at("18:00").do(startPoint)
 
 
-schedule.every().day.at("07:30").do(tweetMotivations)
-schedule.every().day.at("13:00").do(tweetJobTips)
-schedule.every().day.at("17:00").do(tweetMotivations)
-schedule.every().day.at("20:30").do(tweetJobTips)
+# schedule.every().day.at("07:30").do(tweetMotivations)
+# schedule.every().day.at("13:00").do(tweetJobTips)
+# schedule.every().day.at("17:00").do(tweetMotivations)
+# schedule.every().day.at("20:30").do(tweetJobTips)
 
 # schedule.every(30).seconds.do(startPoint)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
 
 
 # print(jobScrapper())
