@@ -2,10 +2,10 @@ import google.generativeai as genai
 import os
 from env_config import APIKey
 
-def AI_Summary(text, link):
+def AI_Summary(detail, link):
     genai.configure(api_key = APIKey)
     model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content("Summarize the following job description for a tweet along with the full link to the job provided: " + text + ". Job link:" + link + ". Add a Jobotron hashtag along with two other relating to the job and/or jobs in Ghana.")
+    response = model.generate_content("Summarize the following job description for a tweet along with the full link to the job provided: " + detail + ". Job link:" + link + ". Add a Jobotron hashtag along with two other relating to the job and/or jobs in Ghana.")
     return response.text
 
 
@@ -24,11 +24,16 @@ def jobTips():
     return response.text
 
 
+# def adviceAndMotivation():
+#     genai.configure(api_key = APIKey)
+#     model = genai.GenerativeModel("gemini-1.5-flash")
+#     response = model.generate_content("Write a motivational tweet for job seekers in Ghana that encourages persistence in the job hunt and highlights the importance of staying positive or general motivation. Add relevant hashtags and #Jobotron. This tweet should be under 280 characters long")
+#     return response.text
+
 
 def adviceAndMotivation():
     genai.configure(api_key = APIKey)
     model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content("Write a motivational tweet for job seekers in Ghana that encourages persistence in the job hunt and highlights the importance of staying positive or general motivation. Add relevant hashtags and #Jobotron. This tweet should be under 280 characters long")
+    response = model.generate_content("Write a motivational on various topics of your choosing for a tweet for job seekers in Ghana . Add relevant hashtags and #Jobotron. This tweet should be under 280 characters long")
     return response.text
-
 

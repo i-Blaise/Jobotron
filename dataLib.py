@@ -7,9 +7,10 @@ def saveJobs(scrappedJobs):
     document_list = []
     # print(scrappedJobs)
     for key, value in scrappedJobs.items():
-        checkCollection = collection.estimated_document_count() #Check if collection is empty
+        filter = {"numberTimesPosted": {"$lt": 3}}
+        checkCollection = collection.count_documents(filter) #Check if collection is empty
         if checkCollection > 0:
-            count = collection.estimated_document_count({"name" : key, "link" : value}) # Check if data isnt already in DB
+            count = collection.count_documents({"name" : key, "link" : value}) # Check if data isnt already in DB
             if count == 0:
                 job_dict = dict(name = key, link = value, numberTimesPosted = 0)
                 document_list.append(job_dict)
@@ -28,10 +29,12 @@ def saveJobs(scrappedJobs):
 def retrieveData():
     lessThanOne = {"numberTimesPosted": {"$eq": 0}}
     postedOnceOrTwice = {"$or": [{"numberTimesPosted": {"$eq": 1}}, {"numberTimesPosted": {"$eq": 2}}]}
-    if collection.estimated_document_count(lessThanOne) > 0:
+    # results = collection.find_one(postedOnceOrTwice)
+    # return results
+    if collection.count_documents(lessThanOne) > 0:
         results = collection.find_one(lessThanOne)
         return results
-    elif collection.estimated_document_count(postedOnceOrTwice) > 0:
+    elif collection.count_documents(postedOnceOrTwice) > 0:
         results = collection.find_one(postedOnceOrTwice)
         return results
 
