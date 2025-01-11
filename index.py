@@ -101,7 +101,7 @@ def tweetMotivations():
 
 
 # print(tweetJobTips())
-print(tweetMotivations())
+# print(tweetMotivations())
 
 print(startPoint())
 # print(scrapJobDetails())
