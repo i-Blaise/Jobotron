@@ -1,6 +1,6 @@
 # Jobotron 🚀
 
-Jobotron is an intelligent job-posting bot that automates the process of finding, summarizing, and sharing job opportunities on Twitter. It leverages the power of Gemini AI to generate concise tweets with job descriptions and links, helping job seekers stay informed and motivated.
+Jobotron, a playful nod to Megatron from Transformers, is an intelligent job-posting bot that automates finding, summarizing, and sharing job opportunities on Twitter. Powered by Gemini AI, it creates concise tweets with job descriptions and links, keeping job seekers informed and motivated.
 
 ---
 
