@@ -1,5 +1,8 @@
+import os
+from dotenv import load_dotenv
 from pymongo import MongoClient
-import env_config
+
+load_dotenv()
 
 class MongoDBManager:
     _client = None
@@ -9,11 +12,12 @@ class MongoDBManager:
     @classmethod
     def get_client(cls):
         if cls._client is None:
-            if not env_config.MONGODB_URI:
+            uri = os.getenv("MONGODB_URI")
+            if not uri:
                 print("MONGODB_URI not found in environment variables.")
                 return None
             try:
-                cls._client = MongoClient(env_config.MONGODB_URI)
+                cls._client = MongoClient(uri)
                 # Check connection
                 cls._client.admin.command('ping')
             except Exception as e:
@@ -44,3 +48,4 @@ class MongoDBManager:
 client = MongoDBManager.get_client()
 database = MongoDBManager.get_database()
 collection = MongoDBManager.get_collection()
+

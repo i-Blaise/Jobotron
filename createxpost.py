@@ -1,15 +1,18 @@
+import os
+from dotenv import load_dotenv
 import tweepy
 from logs import logProcesses
-import env_config
+
+load_dotenv()
 
 def get_twitter_client():
     """Initializes and returns a Tweepy Client."""
     return tweepy.Client(
-        bearer_token=env_config.X_BEARER_TOKEN,
-        consumer_key=env_config.X_API_KEY,
-        consumer_secret=env_config.X_API_SECRET,
-        access_token=env_config.X_ACCESS_TOKEN,
-        access_token_secret=env_config.X_ACCESS_TOKEN_SECRET
+        bearer_token=os.getenv("X_BEARER_TOKEN"),
+        consumer_key=os.getenv("X_API_KEY"),
+        consumer_secret=os.getenv("X_API_SECRET"),
+        access_token=os.getenv("X_ACCESS_TOKEN"),
+        access_token_secret=os.getenv("X_ACCESS_TOKEN_SECRET")
     )
 
 def postJob(post):
@@ -42,6 +45,7 @@ def postJob(post):
         }
         logProcesses(results["response"])
         return results
+
 
 
 

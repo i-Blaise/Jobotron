@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-import env_config
 from mongodbConnect import MongoDBManager
 from job_scrapper import jobScrapper
 # from gemini_ai import AI_Summary  # Dependency failed to install on Python 3.14
@@ -21,9 +20,11 @@ def test_mongodb():
     print("\n--- Testing MongoDB Connection ---")
     try:
         client = MongoDBManager.get_client()
-        # The ismaster command is cheap and does not require auth.
-        client.admin.command('ismaster')
-        print("MongoDB connection successful!")
+        if client:
+            client.admin.command('ismaster')
+            print("MongoDB connection successful!")
+        else:
+            print("MongoDB client not available.")
     except Exception as e:
         print(f"MongoDB connection failed: {e}")
 
@@ -50,5 +51,6 @@ if __name__ == "__main__":
     test_mongodb()
     test_scraper()
     test_twitter()
+
 
 
