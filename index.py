@@ -1,6 +1,7 @@
 from job_scrapper import jobScrapper, scrapJobDetails
 from dataLib import retrieveData, countData, updatePostedJob, deleteOneData
-from gemini_ai import AI_Summary, jobTips, adviceAndMotivation
+from ai_manager import AI_Summary, jobTips, adviceAndMotivation
+
 from createxpost import postJob
 import schedule
 import time

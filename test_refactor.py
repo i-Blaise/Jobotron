@@ -2,8 +2,9 @@ import os
 from dotenv import load_dotenv
 from mongodbConnect import MongoDBManager
 from job_scrapper import jobScrapper
-# from gemini_ai import AI_Summary  # Dependency failed to install on Python 3.14
+from ai_manager import AI_Summary, jobTips
 import tweepy
+
 
 def test_env():
     print("--- Testing Environment Variables ---")
@@ -46,11 +47,23 @@ def test_twitter():
     except Exception as e:
         print(f"Twitter client failed to initialize: {e}")
 
+def test_openai():
+    print("\n--- Testing OpenAI Integration ---")
+    try:
+        tip = jobTips()
+        print(f"OpenAI Tip: {tip}")
+        summary = AI_Summary("Software Engineer at Google with 5 years experience in Python.", "https://example.com/job")
+        print(f"OpenAI Summary: {summary}")
+    except Exception as e:
+        print(f"OpenAI test failed: {e}")
+
 if __name__ == "__main__":
     test_env()
     test_mongodb()
     test_scraper()
     test_twitter()
+    test_openai()
+
 
 
 

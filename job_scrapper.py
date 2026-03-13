@@ -2,7 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import dataLib
 from logs import logProcesses
-from gemini_ai import extractClosingDate
+from ai_manager import extractClosingDate
+
 
 def jobScrapper():
     """Scrapes job listings from the main page and saves them to the DB."""
