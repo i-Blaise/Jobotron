@@ -1,11 +1,16 @@
-# import mongodbConnect
-from mongodbConnect import collection, client
+from mongodbConnect import MongoDBManager
 from logs import logProcesses
-# from ..job_scrapper import jobScrapper
+
+def get_db_resources():
+    return MongoDBManager.get_collection(), MongoDBManager.get_client()
 
 def saveJobs(scrappedJobs):
+    collection, _ = get_db_resources()
+    if collection is None:
+        print("MongoDB collection not available. Skipping saveJobs.")
+        return "Database Unavailable"
+        
     document_list = []
-    # print(scrappedJobs)
     for key, value in scrappedJobs.items():
         filter = {"numberTimesPosted": {"$lt": 3}}
         checkCollection = collection.count_documents(filter) #Check if collection is empty
@@ -23,50 +28,53 @@ def saveJobs(scrappedJobs):
     else:
         result = collection.insert_many(document_list)
         return result.acknowledged
-        
-
 
 def retrieveData():
+    collection, _ = get_db_resources()
+    if collection is None:
+        return None
+        
     lessThanOne = {"numberTimesPosted": {"$eq": 0}}
     postedOnceOrTwice = {"$or": [{"numberTimesPosted": {"$eq": 1}}, {"numberTimesPosted": {"$eq": 2}}]}
-    # results = collection.find_one(postedOnceOrTwice)
-    # return results
+    
     if collection.count_documents(lessThanOne) > 0:
         results = collection.find_one(lessThanOne)
         return results
     elif collection.count_documents(postedOnceOrTwice) > 0:
         results = collection.find_one(postedOnceOrTwice)
         return results
-
-
+    return None
 
 def countData():
+    collection, _ = get_db_resources()
+    if collection is None:
+        return 0
     filter_query = {"numberTimesPosted": {"$lte": 2}}
-    results = collection.estimated_document_count(filter_query)
-    # print(results)
-    return results
-
+    # Use count_documents instead of estimated_document_count if the filter is important and collection is small
+    # Or keep estimated if performance matters, but it doesn't take a filter in the same way
+    return collection.count_documents(filter_query)
 
 def updatePostedJob(job):
+    collection, _ = get_db_resources()
+    if collection is None:
+        return False
     filter_query = {"name": job['name'], "link": job['link']}
     update_operation = { "$inc": {"numberTimesPosted": 1} }
     result = collection.update_one(filter_query, update_operation)
     return result.acknowledged
 
-
-    
-
-
 def deleteAllData():
+    collection, _ = get_db_resources()
+    if collection is None:
+        return False
     filter_query = {"numberTimesPosted": {"$lte": 2}}
     results = collection.delete_many(filter_query)
-    # logProcesses(results.acknowledged) Log Later
     return results.acknowledged
-
 
 def deleteOneData(jobID):
+    collection, _ = get_db_resources()
+    if collection is None:
+        return False
     filter_query = {"_id": jobID}
     results = collection.delete_one(filter_query)
-    # logProcesses(results.acknowledged) Log later
     return results.acknowledged
-# print(saveJobs())

@@ -1,5 +1,5 @@
 from job_scrapper import jobScrapper, scrapJobDetails
-from dataLib import retrieveData, countData, deleteAllData, updatePostedJob, deleteOneData
+from dataLib import retrieveData, countData, updatePostedJob, deleteOneData
 from gemini_ai import AI_Summary, jobTips, adviceAndMotivation
 from createxpost import postJob
 import schedule
@@ -7,135 +7,97 @@ import time
 from logs import logProcesses
 from datetime import datetime
 
-
+def has_date_elapsed(date_str):
+    if not date_str or date_str == 'False':
+        return False
+    try:
+        # Parse the date string (DD/MM/YYYY) into a datetime object
+        input_date = datetime.strptime(date_str, "%d/%m/%Y")
+        # Get the current date without the time part
+        current_date = datetime.now().date()
+        # Compare input date with the current date
+        return input_date.date() < current_date
+    except ValueError:
+        return False
 
 def startPoint():
-    count = countData() # Check DB to see if we have enough stored jobs to post for the day ===== 4 post per day ====
-    if count >= 4:
-        job = retrieveData() #If theres enough jobs, retrieve one
-        jobLink = job['link']
-        jobDetails = scrapJobDetails(jobLink) # Use link to scrap the details of the job
+    """Main orchestration function to process and post job listings."""
+    while True:
+        count = countData()
+        print(f"Current stored jobs: {count}")
         
-        # return jobDetails
-        expirationDate = jobDetails["closingDate"].strip()
-        # return expirationDate
-        expired = True if has_date_elapsed(expirationDate) else False
+        if count >= 4:
+            job = retrieveData()
+            if not job:
+                print("No job retrieved from DB.")
+                break
+                
+            jobLink = job['link']
+            jobDetails = scrapJobDetails(jobLink)
+            
+            if not jobDetails or not jobDetails.get("status"):
+                print(f"Failed to scrap details for {jobLink}")
+                # Optionally mark as processed or skip
+                break
 
-        if expired == True:
-            deleteOneData(job["_id"])
-            jobName = job["name"]
-            print(f"{jobName} job has been deleted because it's expired")
-            startPoint()
-        
-        twitterPost = AI_Summary(jobDetails["jobDetail"], jobDetails["link"]) #Run the details by Gemini AI to summerize it for a X
-        # return print(twitterPost)
-        # return twitterPost
-        if twitterPost:
-            postResult = postJob(twitterPost)
-            if postResult["status"]:
-                updatePostedJob(job)
-                print("Job Tweeted")
-
-    else:
-        jobScrapper()
-        result = {
-            "status": False,
-            "response": "DB results less than 4 documents || New Jobs Scrapped"
-        }
-        logProcesses(result['response'])
-        print("DB results less than 4 documents || New Jobs Scrapped")
-        startPoint()
-        # print(twitterPost)
-        # print(postJob(twitterPost))
-
-
-
-
-
-
-# def begin():
-#     count = countData()
-#     while
-
-
-
-
-def has_date_elapsed(date_str):
-    check = False if date_str == 'False' else ''
-    if check == False:
-        return False
-    # Parse the date string (DD/MM/YYYY) into a datetime object
-    input_date = datetime.strptime(date_str, "%d/%m/%Y")
-    
-    # Get the current date without the time part
-    current_date = datetime.now().date()
-    
-    # Compare input date with the current date
-    if input_date.date() < current_date:
-        return True  # Date has elapsed (i.e., it is in the past)
-    else:
-        return False  # Date has not elapsed (i.e., it is today or in the future)
-
-
-
+            expirationDate = jobDetails["closingDate"].strip()
+            if has_date_elapsed(expirationDate):
+                deleteOneData(job["_id"])
+                print(f"Job '{job['name']}' deleted because it's expired.")
+                continue # Try getting the next job
+            
+            twitterPost = AI_Summary(jobDetails["jobDetail"], jobDetails["link"])
+            if twitterPost:
+                postResult = postJob(twitterPost)
+                if postResult["status"]:
+                    updatePostedJob(job)
+                    print(f"Job Tweeted: {job['name']}")
+                else:
+                    print(f"Failed to tweet job: {postResult.get('response')}")
+            break # Success or finished attempt for this run
+        else:
+            print("DB has fewer than 4 jobs. Running scraper...")
+            scrap_result = jobScrapper()
+            logProcesses(f"Scraper run result: {scrap_result}")
+            # After scraping, it will loop once more to see if it can now post
+            # But let's check if we actually found new jobs to avoid infinite loop if site is down
+            if scrap_result == "No New Job":
+                print("No new jobs found by scraper.")
+                break
+            # Continue the loop to try posting now that we have more data
 
 def tweetJobTips():
+    print("Generating Job Tip...")
     JobTipsTweet = jobTips()
-    postJob(JobTipsTweet)
-    currentDate = datetime.now()
-    stringDate = currentDate.strftime('%m/%d/%Y  %X')
-    print("Job Tip Tweeted at: "+ stringDate)
-
+    if JobTipsTweet:
+        postJob(JobTipsTweet)
+        print(f"Job Tip Tweeted at: {datetime.now().strftime('%m/%d/%Y %X')}")
 
 def tweetMotivations():
+    print("Generating Motivation...")
     motivationTweet = adviceAndMotivation()
-    postJob(motivationTweet)
-    currentDate = datetime.now()
-    stringDate = currentDate.strftime('%m/%d/%Y  %X')
-    print("Job Advice/Motivation Tweeted at: "+ stringDate)
+    if motivationTweet:
+        postJob(motivationTweet)
+        print(f"Job Advice/Motivation Tweeted at: {datetime.now().strftime('%m/%d/%Y %X')}")
 
-
-
-
-
-
-
-# print(tweetJobTips())
-# print(tweetMotivations())
-
-print(startPoint())
-# print(scrapJobDetails())
-# print(jobScrapper())
-# print(retrieveData())
-
-# startPoint()
+if __name__ == "__main__":
+    # To run once:
+    startPoint()
     
-# jobDetails = scrapJobDetails()
-# print(jobDetails["link"])
-# print(AI_Summary(jobDetails["jobDetail"], jobDetails["link"]))
-# print(countData())
-# print(deleteAllData())
+    # To use the scheduler, uncomment the following:
+    """
+    schedule.every().day.at("09:00").do(startPoint)
+    schedule.every().day.at("12:00").do(startPoint)
+    schedule.every().day.at("15:00").do(startPoint)
+    schedule.every().day.at("18:00").do(startPoint)
 
+    schedule.every().day.at("07:30").do(tweetMotivations)
+    schedule.every().day.at("13:00").do(tweetJobTips)
+    schedule.every().day.at("17:00").do(tweetMotivations)
+    schedule.every().day.at("20:30").do(tweetJobTips)
 
-# Schedule the job to run at four specific times each day
-# schedule.every().day.at("09:00").do(startPoint)
-# schedule.every().day.at("12:00").do(startPoint)
-# schedule.every().day.at("15:00").do(startPoint)
-# schedule.every().day.at("18:00").do(startPoint)
-
-
-# schedule.every().day.at("07:30").do(tweetMotivations)
-# schedule.every().day.at("13:00").do(tweetJobTips)
-# schedule.every().day.at("17:00").do(tweetMotivations)
-# schedule.every().day.at("20:30").do(tweetJobTips)
-
-# schedule.every(30).seconds.do(startPoint)
-
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1)
-
-
-# print(jobScrapper())
-
-# print(retrieveData())
+    print("Jobotron running on schedule...")
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+    """
