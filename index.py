@@ -98,38 +98,15 @@ def startPoint():
                 break
             # Otherwise, continue the loop to check if we now have enough jobs
 
-def tweetJobTips():
-    print("Generating Job Tip...")
-    JobTipsTweet = jobTips()
-    if JobTipsTweet:
-        postJob(JobTipsTweet)
-        print(f"Job Tip Tweeted at: {datetime.now().strftime('%m/%d/%Y %X')}")
-
-def tweetMotivations():
-    print("Generating Motivation...")
-    motivationTweet = adviceAndMotivation()
-    if motivationTweet:
-        postJob(motivationTweet)
-        print(f"Job Advice/Motivation Tweeted at: {datetime.now().strftime('%m/%d/%Y %X')}")
 
 if __name__ == "__main__":
-    # To run once:
-    startPoint()
-    
-    # To use the scheduler, uncomment the following:
-    """
+    # 4 job posts per day
     schedule.every().day.at("09:00").do(startPoint)
     schedule.every().day.at("12:00").do(startPoint)
     schedule.every().day.at("15:00").do(startPoint)
     schedule.every().day.at("18:00").do(startPoint)
 
-    schedule.every().day.at("07:30").do(tweetMotivations)
-    schedule.every().day.at("13:00").do(tweetJobTips)
-    schedule.every().day.at("17:00").do(tweetMotivations)
-    schedule.every().day.at("20:30").do(tweetJobTips)
-
-    print("Jobotron running on schedule...")
+    print("Jobotron running on schedule (4 job posts/day)...")
     while True:
         schedule.run_pending()
         time.sleep(60)
-    """
