@@ -7,6 +7,21 @@ import schedule
 import time
 from logs import logProcesses
 from datetime import datetime
+from mongodbConnect import MongoDBManager
+
+def check_db_connection():
+    """Check MongoDB connection at startup and return True if available."""
+    client = MongoDBManager.get_client()
+    if client is None:
+        print("ERROR: MongoDB connection failed. Check your MONGODB_URI in .env.")
+        print("  - Ensure the MongoDB Atlas cluster is running.")
+        print("  - Ensure your server's IP is whitelisted in MongoDB Atlas Network Access.")
+        print("  - Verify dnspython is installed: pip install dnspython")
+        logProcesses("STARTUP ERROR: MongoDB connection unavailable.")
+        return False
+    print("MongoDB connection: OK")
+    return True
+
 
 def has_date_elapsed(date_str):
     if not date_str or date_str == 'False':
@@ -23,6 +38,14 @@ def has_date_elapsed(date_str):
 
 def startPoint():
     """Main orchestration function to process and post job listings."""
+    # Health check: fail fast if DB is unavailable
+    if not check_db_connection():
+        return
+
+    max_scrape_attempts = 3
+
+    scrape_attempts = 0
+
     while True:
         count = countData()
         print(f"Current stored jobs: {count}")
@@ -37,9 +60,9 @@ def startPoint():
             jobDetails = scrapJobDetails(jobLink)
             
             if not jobDetails or not jobDetails.get("status"):
-                print(f"Failed to scrap details for {jobLink}")
-                # Optionally mark as processed or skip
-                break
+                print(f"Failed to scrap details for {jobLink}. Skipping this job.")
+                updatePostedJob(job) # Mark as attempted so we move on
+                continue
 
             expirationDate = jobDetails["closingDate"].strip()
             if has_date_elapsed(expirationDate):
@@ -57,15 +80,23 @@ def startPoint():
                     print(f"Failed to tweet job: {postResult.get('response')}")
             break # Success or finished attempt for this run
         else:
-            print("DB has fewer than 4 jobs. Running scraper...")
+            if scrape_attempts >= max_scrape_attempts:
+                print(f"Max scrape attempts ({max_scrape_attempts}) reached. Exiting to avoid infinite loop.")
+                logProcesses(f"Scraper gave up after {max_scrape_attempts} attempts.")
+                break
+
+            scrape_attempts += 1
+            print(f"DB has fewer than 4 jobs. Running scraper (attempt {scrape_attempts}/{max_scrape_attempts})...")
             scrap_result = jobScrapper()
             logProcesses(f"Scraper run result: {scrap_result}")
-            # After scraping, it will loop once more to see if it can now post
-            # But let's check if we actually found new jobs to avoid infinite loop if site is down
-            if scrap_result == "No New Job":
-                print("No new jobs found by scraper.")
+
+            if isinstance(scrap_result, str) and scrap_result in ("No New Job", "Database Unavailable"):
+                print(f"Scraper returned: '{scrap_result}'. Stopping.")
                 break
-            # Continue the loop to try posting now that we have more data
+            if isinstance(scrap_result, dict) and not scrap_result.get("status", True):
+                print(f"Scraper failed: {scrap_result.get('response')}. Stopping.")
+                break
+            # Otherwise, continue the loop to check if we now have enough jobs
 
 def tweetJobTips():
     print("Generating Job Tip...")
