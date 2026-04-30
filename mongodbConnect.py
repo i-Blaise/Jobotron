@@ -17,7 +17,12 @@ class MongoDBManager:
                 print("MONGODB_URI not found in environment variables.")
                 return None
             try:
-                cls._client = MongoClient(uri)
+                cls._client = MongoClient(
+                    uri,
+                    serverSelectionTimeoutMS=10000,  # Fail fast after 10s instead of default 30s
+                    connectTimeoutMS=10000,
+                    socketTimeoutMS=10000,
+                )
                 # Check connection
                 cls._client.admin.command('ping')
             except Exception as e:
@@ -25,6 +30,7 @@ class MongoDBManager:
                 cls._client = None
                 return None
         return cls._client
+
 
     @classmethod
     def get_database(cls, db_name="jobs"):

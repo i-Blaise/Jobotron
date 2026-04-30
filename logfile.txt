@@ -16,3 +16,5 @@ Log issue date: 01/09/2025  12:08:01. ========= Log issue response: Job Details 
 Log issue date: 01/09/2025  12:08:47. ========= Log issue response: Job Details scrapped successfully
 Log issue date: 01/09/2025  12:09:14. ========= Log issue response: Job Details scrapped successfully
 Log issue date: 01/09/2025  12:25:35. ========= Log issue response: Job Details scrapped successfully
+Log issue date: 03/15/2026  00:43:54. ========= Log issue response: No jobs found on the page.
+Log issue date: 04/30/2026  11:39:11. ========= Log issue response: No jobs found on the page.
