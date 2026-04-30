@@ -1,4 +1,5 @@
-from job_scrapper import jobScrapper, scrapJobDetails
+from job_scrapper import jobScrapper, scrapJobDetails as jobwebScrapJobDetails
+from jobberman_scrapper import jobbermanScrapper, jobbermanScrapJobDetails
 from dataLib import retrieveData, countData, updatePostedJob, deleteOneData
 from ai_manager import AI_Summary, jobTips, adviceAndMotivation
 
@@ -50,14 +51,45 @@ def startPoint():
         count = countData()
         print(f"Current stored jobs: {count}")
         
-        if count >= 4:
+        # Run scraper if we have fewer than 4 jobs to maintain a buffer
+        if count < 4 and scrape_attempts < max_scrape_attempts:
+            scrape_attempts += 1
+            print(f"DB has fewer than 4 jobs. Running scrapers (attempt {scrape_attempts}/{max_scrape_attempts})...")
+            
+            # Run Jobwebghana scraper
+            scrap_result = jobScrapper()
+            logProcesses(f"Jobweb Scraper run result: {scrap_result}")
+            
+            # If no new jobs, try Jobberman
+            if isinstance(scrap_result, str) and scrap_result in ("No New Job", "Database Unavailable"):
+                print(f"Jobwebghana found no new jobs. Trying Jobberman...")
+                scrap_result_jb = jobbermanScrapper()
+                logProcesses(f"Jobberman Scraper run result: {scrap_result_jb}")
+                if isinstance(scrap_result_jb, str) and scrap_result_jb in ("No New Job", "Database Unavailable"):
+                    print(f"Jobberman returned: '{scrap_result_jb}'. Continuing to post remaining jobs if any.")
+                    scrape_attempts = max_scrape_attempts
+                elif isinstance(scrap_result_jb, dict) and not scrap_result_jb.get("status", True):
+                    print(f"Jobberman Scraper failed: {scrap_result_jb.get('response')}. Continuing to post remaining jobs if any.")
+                    scrape_attempts = max_scrape_attempts
+            elif isinstance(scrap_result, dict) and not scrap_result.get("status", True):
+                print(f"Jobweb Scraper failed: {scrap_result.get('response')}. Continuing to post remaining jobs if any.")
+                scrape_attempts = max_scrape_attempts
+                
+            # Recalculate count after scraping
+            count = countData()
+            print(f"Current stored jobs after scrape attempt: {count}")
+
+        if count > 0:
             job = retrieveData()
             if not job:
                 print("No job retrieved from DB.")
                 break
                 
             jobLink = job['link']
-            jobDetails = scrapJobDetails(jobLink)
+            if 'jobberman.com' in jobLink:
+                jobDetails = jobbermanScrapJobDetails(jobLink)
+            else:
+                jobDetails = jobwebScrapJobDetails(jobLink)
             
             if not jobDetails or not jobDetails.get("status"):
                 print(f"Failed to scrap details for {jobLink}. Skipping this job.")
@@ -80,23 +112,8 @@ def startPoint():
                     print(f"Failed to tweet job: {postResult.get('response')}")
             break # Success or finished attempt for this run
         else:
-            if scrape_attempts >= max_scrape_attempts:
-                print(f"Max scrape attempts ({max_scrape_attempts}) reached. Exiting to avoid infinite loop.")
-                logProcesses(f"Scraper gave up after {max_scrape_attempts} attempts.")
-                break
-
-            scrape_attempts += 1
-            print(f"DB has fewer than 4 jobs. Running scraper (attempt {scrape_attempts}/{max_scrape_attempts})...")
-            scrap_result = jobScrapper()
-            logProcesses(f"Scraper run result: {scrap_result}")
-
-            if isinstance(scrap_result, str) and scrap_result in ("No New Job", "Database Unavailable"):
-                print(f"Scraper returned: '{scrap_result}'. Stopping.")
-                break
-            if isinstance(scrap_result, dict) and not scrap_result.get("status", True):
-                print(f"Scraper failed: {scrap_result.get('response')}. Stopping.")
-                break
-            # Otherwise, continue the loop to check if we now have enough jobs
+            print("Not enough jobs to post and scraper couldn't find new ones.")
+            break
 
 
 if __name__ == "__main__":
