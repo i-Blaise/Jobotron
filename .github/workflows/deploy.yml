@@ -19,4 +19,5 @@ jobs:
           script: |
             cd /opt/Jobotron
             git pull
+            venv/bin/pip install -r requirements.txt
             systemctl restart jobotron
