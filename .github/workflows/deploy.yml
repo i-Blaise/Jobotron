@@ -1,4 +1,4 @@
-name: Deploying Jobotron
+name: Deploy Jobotron
 
 on:
   push:
