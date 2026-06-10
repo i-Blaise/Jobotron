@@ -5,5 +5,7 @@ dnspython
 tweepy
 google-generativeai
 python-dotenv
-schedule
 openai
+fastapi
+uvicorn[standard]
+apscheduler

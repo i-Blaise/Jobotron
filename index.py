@@ -4,8 +4,6 @@ from dataLib import retrieveData, countData, updatePostedJob, deleteOneData
 from ai_manager import AI_Summary, jobTips, adviceAndMotivation
 
 from createxpost import postJob
-import schedule
-import time
 from logs import logProcesses
 from datetime import datetime
 from mongodbConnect import MongoDBManager
@@ -116,14 +114,3 @@ def startPoint():
             break
 
 
-if __name__ == "__main__":
-    # 4 job posts per day
-    schedule.every().day.at("09:00").do(startPoint)
-    schedule.every().day.at("12:00").do(startPoint)
-    schedule.every().day.at("15:00").do(startPoint)
-    schedule.every().day.at("18:00").do(startPoint)
-
-    print("Jobotron running on schedule (4 job posts/day)...")
-    while True:
-        schedule.run_pending()
-        time.sleep(60)

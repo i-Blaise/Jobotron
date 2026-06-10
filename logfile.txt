@@ -18,3 +18,57 @@ Log issue date: 01/09/2025  12:09:14. ========= Log issue response: Job Details 
 Log issue date: 01/09/2025  12:25:35. ========= Log issue response: Job Details scrapped successfully
 Log issue date: 03/15/2026  00:43:54. ========= Log issue response: No jobs found on the page.
 Log issue date: 04/30/2026  11:39:11. ========= Log issue response: No jobs found on the page.
+Log issue date: 05/02/2026  01:14:55. ========= Log issue response: Jobotron started via FastAPI + APScheduler
+Log issue date: 05/02/2026  01:15:01. ========= Log issue response: Jobotron started via FastAPI + APScheduler
+Log issue date: 05/02/2026  01:15:12. ========= Log issue response: Jobotron started via FastAPI + APScheduler
+Log issue date: 05/02/2026  01:15:36. ========= Log issue response: Jobotron started via FastAPI + APScheduler
+Log issue date: 05/02/2026  01:16:58. ========= Log issue response: Jobotron started via FastAPI + APScheduler
+Log issue date: 05/02/2026  01:20:33. ========= Log issue response: Jobotron started via FastAPI + APScheduler
+Log issue date: 05/02/2026  01:20:55. ========= Log issue response: Jobotron started via FastAPI + APScheduler
+Log issue date: 05/02/2026  01:23:17. ========= Log issue response: Jobotron started via FastAPI + APScheduler
+Log issue date: 05/02/2026  01:48:06. ========= Log issue response: Jobotron started via FastAPI + APScheduler
+Log issue date: 05/02/2026  01:53:15. ========= Log issue response: Jobotron started via FastAPI + APScheduler
+Log issue date: 05/02/2026  09:01:38. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/03/2026  09:00:11. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/03/2026  12:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/03/2026  15:03:05. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/03/2026  18:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/04/2026  12:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/04/2026  15:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/04/2026  18:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/05/2026  09:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/05/2026  12:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/05/2026  15:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/05/2026  18:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/06/2026  09:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/06/2026  12:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/06/2026  15:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/06/2026  18:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/07/2026  09:00:53. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/07/2026  12:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/07/2026  15:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/07/2026  18:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/08/2026  09:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/08/2026  12:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/08/2026  15:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/09/2026  09:00:53. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/09/2026  12:01:01. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/09/2026  15:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/09/2026  18:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/10/2026  09:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/10/2026  12:01:04. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/10/2026  15:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/10/2026  18:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/11/2026  09:00:26. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/11/2026  12:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/11/2026  15:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/11/2026  18:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/12/2026  09:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/12/2026  12:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/12/2026  15:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/12/2026  18:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/13/2026  09:03:56. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/13/2026  12:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/13/2026  15:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/13/2026  18:00:10. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
+Log issue date: 05/14/2026  12:00:11. ========= Log issue response: STARTUP ERROR: MongoDB connection unavailable.
