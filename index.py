@@ -4,8 +4,6 @@ from dataLib import retrieveData, countData, updatePostedJob, deleteOneData
 from ai_manager import AI_Summary, jobTips, adviceAndMotivation
 
 from createxpost import postJob
-import schedule
-import time
 from logs import logProcesses
 from datetime import datetime
 from mongodbConnect import MongoDBManager
@@ -60,9 +58,13 @@ def startPoint():
             scrap_result = jobScrapper()
             logProcesses(f"Jobweb Scraper run result: {scrap_result}")
             
-            # If no new jobs, try Jobberman
-            if isinstance(scrap_result, str) and scrap_result in ("No New Job", "Database Unavailable"):
-                print(f"Jobwebghana found no new jobs. Trying Jobberman...")
+            # If Jobwebghana found nothing or failed, try Jobberman
+            jobweb_no_results = (
+                (isinstance(scrap_result, str) and scrap_result in ("No New Job", "Database Unavailable"))
+                or (isinstance(scrap_result, dict) and not scrap_result.get("status", True))
+            )
+            if jobweb_no_results:
+                print(f"Jobwebghana returned no new jobs ({scrap_result}). Trying Jobberman...")
                 scrap_result_jb = jobbermanScrapper()
                 logProcesses(f"Jobberman Scraper run result: {scrap_result_jb}")
                 if isinstance(scrap_result_jb, str) and scrap_result_jb in ("No New Job", "Database Unavailable"):
@@ -71,9 +73,6 @@ def startPoint():
                 elif isinstance(scrap_result_jb, dict) and not scrap_result_jb.get("status", True):
                     print(f"Jobberman Scraper failed: {scrap_result_jb.get('response')}. Continuing to post remaining jobs if any.")
                     scrape_attempts = max_scrape_attempts
-            elif isinstance(scrap_result, dict) and not scrap_result.get("status", True):
-                print(f"Jobweb Scraper failed: {scrap_result.get('response')}. Continuing to post remaining jobs if any.")
-                scrape_attempts = max_scrape_attempts
                 
             # Recalculate count after scraping
             count = countData()
@@ -116,14 +115,3 @@ def startPoint():
             break
 
 
-if __name__ == "__main__":
-    # 4 job posts per day
-    schedule.every().day.at("09:00").do(startPoint)
-    schedule.every().day.at("12:00").do(startPoint)
-    schedule.every().day.at("15:00").do(startPoint)
-    schedule.every().day.at("18:00").do(startPoint)
-
-    print("Jobotron running on schedule (4 job posts/day)...")
-    while True:
-        schedule.run_pending()
-        time.sleep(60)

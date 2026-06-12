@@ -1,0 +1,23 @@
+name: Deploy Jobotron!
+
+on:
+  push:
+    branches:
+      - main
+      - scraping-issues-fix
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.IP_ADDRESS }}
+          username: root
+          key: ${{ secrets.PERSONAL_SERVER_SSH_KEY }}
+          script: |
+            cd /opt/Jobotron
+            git pull
+            venv/bin/pip install -r requirements.txt
+            systemctl restart jobotron
