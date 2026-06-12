@@ -93,7 +93,11 @@ async def trigger_scrape():
 def _run_scrape():
     scrap_result = jobScrapper()
     logProcesses(f"Manual scrape - Jobweb: {scrap_result}")
-    if isinstance(scrap_result, str) and scrap_result in ("No New Job", "Database Unavailable"):
+    jobweb_no_results = (
+        (isinstance(scrap_result, str) and scrap_result in ("No New Job", "Database Unavailable"))
+        or (isinstance(scrap_result, dict) and not scrap_result.get("status", True))
+    )
+    if jobweb_no_results:
         scrap_result_jb = jobbermanScrapper()
         logProcesses(f"Manual scrape - Jobberman: {scrap_result_jb}")
         return {"jobwebghana": scrap_result, "jobberman": str(scrap_result_jb)}
