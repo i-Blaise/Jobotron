@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from datetime import datetime, timedelta
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,6 +20,9 @@ scheduler = AsyncIOScheduler(timezone="Africa/Accra")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     scheduler.add_job(startPoint, "cron", hour="9,12,15,18", misfire_grace_time=300)
+    # TEMPORARY: one-off run 60s after startup to verify the scraper fix in
+    # production. Remove once confirmed.
+    scheduler.add_job(startPoint, "date", run_date=datetime.now() + timedelta(seconds=60))
     scheduler.start()
     logProcesses("Jobotron started via FastAPI + APScheduler")
     yield
