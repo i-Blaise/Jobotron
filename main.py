@@ -4,7 +4,6 @@ from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from typing import Dict, List, Optional
 import asyncio
 import hmac
 import os
@@ -62,15 +61,6 @@ class LoginRequest(BaseModel):
     password: str
 
 
-class ConfigUpdate(BaseModel):
-    schedule_hours: Optional[List[int]] = None
-    keywords: Optional[List[str]] = None
-    sources: Optional[Dict[str, bool]] = None
-    max_post_count: Optional[int] = None
-    min_queue_size: Optional[int] = None
-    jobberman_fallback_query: Optional[str] = None
-
-
 @app.post("/auth/login")
 def login(body: LoginRequest):
     expected = os.getenv("ADMIN_PASSWORD", "")
@@ -100,8 +90,9 @@ def read_config():
 
 
 @app.put("/config", dependencies=[Depends(require_auth)])
-def write_config(body: ConfigUpdate):
-    changes = body.model_dump(exclude_none=True)
+def write_config(body: dict):
+    # validate_config rejects unknown keys and bad values with ValueError
+    changes = {k: v for k, v in body.items() if v is not None}
     try:
         config = update_config(changes)
     except ValueError as e:

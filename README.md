@@ -6,11 +6,11 @@ Jobotron, a playful nod to Megatron from Transformers, is an intelligent job-pos
 
 ## Features ✨
 
-- **Job Scraping**: Automatically scrapes job postings from multiple websites.
+- **Job Scraping**: Automatically scrapes job postings from Jobwebghana and Jobberman.
 - **AI Summarization**: Uses Gemini AI to summarize job descriptions to fit within a single tweet, complete with a link to apply.
 - **Deadline Validation**: Ensures that job deadlines have not passed before posting.
-- **Motivational Posts**: Periodically posts motivational messages and job-search tips using Gemini AI.
 - **Job Reposting**: Saves jobs in a MongoDB database to repost periodically, as long as the deadlines are still valid.
+- **Admin Portal**: A password-protected web dashboard to monitor the bot, browse the job queue, read logs, trigger runs manually, and change settings live (schedule, search keywords, sources, posting behavior).
 - **Easy Setup**: Includes a `requirements.txt` file for effortless installation of dependencies.
 
 ---
@@ -38,42 +38,58 @@ Follow these steps to set up Jobotron on your local machine:
    ```
 
 4. Set up your environment variables:
-   - Add your **Twitter API keys**, **MongoDB connection string**, and **Gemini AI API key** to a `.env` file.
-   - Example `.env` file content:
-     ```env
-     TWITTER_API_KEY=your_api_key
-     TWITTER_API_SECRET=your_api_secret
-     MONGO_URI=your_mongodb_connection_string
-     GEMINI_AI_KEY=your_gemini_api_key
-     ```
+   - Copy `example.env` to `.env` and fill in your **X (Twitter) API keys**, **MongoDB connection string**, **Gemini AI API key**, and an **admin portal password** (`ADMIN_PASSWORD`).
 
 ---
 
 ## Usage 📖
 
-1. Run the main script to start the bot:
+1. Start the bot (FastAPI server + scheduler):
    ```bash
-   python index.py
+   uvicorn main:app --host 0.0.0.0 --port 8000
    ```
 
 2. The bot will:
-   - Scrape job listings from predefined websites.
-   - Use Gemini AI to summarize job descriptions and generate motivational tweets.
-   - Post tweets with job details and links.
-   - Post up to 10 time per day (5 job post and 5 motivtional and job search tip tweets
-   - Periodically repost jobs stored in MongoDB (if deadlines are still valid).
+   - Run a post cycle at the scheduled hours (default 9:00, 12:00, 15:00, 18:00 Africa/Accra).
+   - Scrape job listings when the queue runs low, filtered by your configured keywords.
+   - Use Gemini AI to summarize job descriptions and post tweets with job details and links.
+   - Repost queued jobs (if deadlines are still valid) up to the configured limit.
+
+---
+
+## Admin Portal 🖥️
+
+The server also hosts a web dashboard at `http://<host>:8000/`, protected by `ADMIN_PASSWORD`. From there you can:
+
+- **Dashboard**: DB/scheduler health, queue size, and next scheduled post.
+- **Jobs Queue**: browse, open, or delete queued jobs.
+- **Controls**: trigger a scrape or a post cycle manually.
+- **Logs**: read and download the bot's log file.
+- **Settings**: change the posting schedule, job search keywords, enabled sources, and posting behavior. Settings are stored in MongoDB and applied immediately — no restart or redeploy needed.
+
+All API endpoints except `/health` require the `X-Admin-Key` header (the portal handles this after sign-in).
+
+### Portal development
+
+The frontend lives in `admin/` (React + Vite + Tailwind). For local development run `npm run dev` there alongside the API server (requests are proxied to `localhost:8000`). The production build is committed in `admin/dist` and served by FastAPI directly — after changing the frontend, run:
+
+```bash
+cd admin && npm run build
+```
 
 ---
 
 ## Technologies Used 🛠️
 
-- **Languages**: Python
+- **Languages**: Python, JavaScript
+- **Backend**: FastAPI + Uvicorn
 - **Web Scraping**: BeautifulSoup, Requests
 - **AI Summarization**: Gemini AI
 - **Database**: MongoDB (via PyMongo)
 - **Social Media Integration**: Tweepy (for Twitter API)
 - **Environment Management**: Python dotenv
-- **Scheduling**: Python `schedule` module
+- **Scheduling**: APScheduler
+- **Admin Portal**: React, Vite, Tailwind CSS
 
 ---
 
@@ -95,9 +111,9 @@ Jobotron was created to assist job seekers by automating the discovery and shari
 
 ## Testing 🧪
 
-Run unit tests to ensure everything works as expected:
+Run the integration check script (needs live credentials in `.env`):
 ```bash
-pytest tests/
+python test_refactor.py
 ```
 
 ---
@@ -109,4 +125,3 @@ Created by [Blaise S. Mennia](https://www.linkedin.com/in/blaise-mennia-50b25369
 ---
 
 With **Jobotron**, job searching just got smarter. Let the bot work while you focus on landing your dream job! 🚀
-```
