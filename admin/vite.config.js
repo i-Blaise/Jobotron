@@ -11,6 +11,8 @@ export default defineConfig({
       '/post': 'http://localhost:8000',
       '/logs': 'http://localhost:8000',
       '/schedule': 'http://localhost:8000',
+      '/config': 'http://localhost:8000',
+      '/auth': 'http://localhost:8000',
     },
   },
 })

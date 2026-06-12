@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import dataLib
+from config_manager import get_config
 from logs import logProcesses
 from ai_manager import extractClosingDate
 
@@ -36,12 +37,16 @@ def jobScrapper():
         print(msg)
         return {"status": False, "response": msg}
 
+    keywords = get_config()["keywords"]
+
     job_dict = {}
     for job in jobs:
         result = job.find('a')
         if result and result.get('href'):
             jobLink = result['href']
             jobName = job.text.strip()
+            if keywords and not any(k.lower() in jobName.lower() for k in keywords):
+                continue
             job_dict[jobName] = jobLink
 
     if not job_dict:

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { RefreshCw, Download, ChevronDown } from 'lucide-react'
+import { api } from '../lib/api.js'
 
 export default function Logs() {
   const [logs, setLogs] = useState([])
@@ -13,7 +14,7 @@ export default function Logs() {
   async function loadLogs() {
     setLoading(true)
     try {
-      const data = await fetch(`/logs?lines=${lines}`).then(r => r.json())
+      const data = await api(`/logs?lines=${lines}`)
       setLogs(data.logs || [])
       setTotal(data.total_lines || 0)
       setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 80)

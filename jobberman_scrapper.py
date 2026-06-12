@@ -1,6 +1,8 @@
 import requests
+from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 import dataLib
+from config_manager import get_config
 from logs import logProcesses
 from ai_manager import extractClosingDate
 
@@ -15,8 +17,10 @@ HEADERS = {
 
 def jobbermanScrapper():
     """Scrapes job listings from Jobberman Ghana and saves them to the DB."""
-    url = "https://www.jobberman.com.gh/jobs?q=remote+software+developer"
-    
+    config = get_config()
+    query = " ".join(config["keywords"]) or config["jobberman_fallback_query"]
+    url = f"https://www.jobberman.com.gh/jobs?q={quote_plus(query)}"
+
     try:
         response = requests.get(url, headers=HEADERS, timeout=30)
         response.raise_for_status()

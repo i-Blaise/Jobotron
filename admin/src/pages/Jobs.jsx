@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Trash2, RefreshCw, AlertTriangle, ExternalLink } from 'lucide-react'
+import { api } from '../lib/api.js'
 
 export default function Jobs() {
   const [jobs, setJobs] = useState([])
@@ -7,15 +8,17 @@ export default function Jobs() {
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(null)
   const [clearing, setClearing] = useState(false)
+  const [maxPosts, setMaxPosts] = useState(3)
 
   useEffect(() => { loadJobs() }, [])
 
   async function loadJobs() {
     setLoading(true)
     try {
-      const data = await fetch('/jobs').then(r => r.json())
+      const data = await api('/jobs')
       setJobs(data.jobs || [])
       setCount(data.count || 0)
+      if (data.max_post_count != null) setMaxPosts(data.max_post_count + 1)
     } finally {
       setLoading(false)
     }
@@ -24,7 +27,7 @@ export default function Jobs() {
   async function handleDelete(id) {
     setDeleting(id)
     try {
-      await fetch(`/jobs/${id}`, { method: 'DELETE' })
+      await api(`/jobs/${id}`, { method: 'DELETE' })
       await loadJobs()
     } finally {
       setDeleting(null)
@@ -35,7 +38,7 @@ export default function Jobs() {
     if (!confirm('Remove all jobs from the queue? This cannot be undone.')) return
     setClearing(true)
     try {
-      await fetch('/jobs', { method: 'DELETE' })
+      await api('/jobs', { method: 'DELETE' })
       await loadJobs()
     } finally {
       setClearing(false)
@@ -54,7 +57,7 @@ export default function Jobs() {
         <div>
           <h2 className="text-2xl font-bold text-slate-800">Jobs Queue</h2>
           <p className="text-slate-500 text-sm mt-1">
-            {count} job{count !== 1 ? 's' : ''} queued (max 3 posts each)
+            {count} job{count !== 1 ? 's' : ''} queued (max {maxPosts} posts each)
           </p>
         </div>
         <div className="flex gap-2">
@@ -120,7 +123,7 @@ export default function Jobs() {
                   </td>
                   <td className="px-6 py-4 text-center">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${postBadge(job.numberTimesPosted)}`}>
-                      {job.numberTimesPosted} / 3
+                      {job.numberTimesPosted} / {maxPosts}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">

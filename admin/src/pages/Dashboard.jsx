@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Database, Clock, Briefcase, Calendar, RefreshCw } from 'lucide-react'
+import { api } from '../lib/api.js'
 
 export default function Dashboard() {
   const [health, setHealth] = useState(null)
@@ -16,9 +17,9 @@ export default function Dashboard() {
 
   async function loadAll() {
     const [h, s, j] = await Promise.allSettled([
-      fetch('/health').then(r => r.ok ? r.json() : Promise.reject(r.status)),
-      fetch('/schedule').then(r => r.ok ? r.json() : Promise.reject(r.status)),
-      fetch('/jobs').then(r => r.ok ? r.json() : Promise.reject(r.status)),
+      api('/health'),
+      api('/schedule'),
+      api('/jobs'),
     ])
     if (h.status === 'fulfilled') setHealth(h.value)
     if (s.status === 'fulfilled') setSchedule(s.value)

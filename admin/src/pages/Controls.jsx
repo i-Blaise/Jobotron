@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Search, Send, Loader, CheckCircle, XCircle } from 'lucide-react'
+import { api } from '../lib/api.js'
 
 export default function Controls() {
   const [scrapeState, setScrapeState] = useState('idle')
@@ -11,7 +12,7 @@ export default function Controls() {
     setScrapeState('loading')
     setScrapeResult(null)
     try {
-      const data = await fetch('/scrape', { method: 'POST' }).then(r => r.json())
+      const data = await api('/scrape', { method: 'POST' })
       setScrapeResult(data)
       setScrapeState('success')
     } catch (err) {
@@ -24,7 +25,7 @@ export default function Controls() {
     setPostState('loading')
     setPostResult(null)
     try {
-      const data = await fetch('/post', { method: 'POST' }).then(r => r.json())
+      const data = await api('/post', { method: 'POST' })
       setPostResult(data)
       setPostState('success')
     } catch (err) {

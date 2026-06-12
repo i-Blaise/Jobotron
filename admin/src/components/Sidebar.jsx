@@ -1,13 +1,14 @@
-import { LayoutDashboard, Briefcase, Zap, FileText, Bot } from 'lucide-react'
+import { LayoutDashboard, Briefcase, Zap, FileText, Bot, Settings, LogOut } from 'lucide-react'
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'jobs', label: 'Jobs Queue', icon: Briefcase },
   { id: 'controls', label: 'Controls', icon: Zap },
   { id: 'logs', label: 'Logs', icon: FileText },
+  { id: 'settings', label: 'Settings', icon: Settings },
 ]
 
-export default function Sidebar({ page, setPage, health }) {
+export default function Sidebar({ page, setPage, health, onLogout }) {
   const isOk = health?.status === 'ok'
   const isDegraded = health?.status === 'degraded'
 
@@ -72,6 +73,13 @@ export default function Sidebar({ page, setPage, health }) {
         <p className="text-slate-200 font-mono text-sm mt-0.5">
           {nextRun ?? '—'}
         </p>
+        <button
+          onClick={onLogout}
+          className="mt-4 flex items-center gap-2 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+        >
+          <LogOut size={13} />
+          Sign out
+        </button>
       </div>
     </aside>
   )

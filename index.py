@@ -4,6 +4,7 @@ from dataLib import retrieveData, countData, updatePostedJob, deleteOneData
 from ai_manager import AI_Summary, jobTips, adviceAndMotivation
 
 from createxpost import postJob
+from config_manager import get_config
 from logs import logProcesses
 from datetime import datetime
 from mongodbConnect import MongoDBManager
@@ -41,6 +42,10 @@ def startPoint():
     if not check_db_connection():
         return
 
+    config = get_config()
+    sources = config["sources"]
+    min_queue_size = config["min_queue_size"]
+
     max_scrape_attempts = 3
 
     scrape_attempts = 0
@@ -48,22 +53,25 @@ def startPoint():
     while True:
         count = countData()
         print(f"Current stored jobs: {count}")
-        
-        # Run scraper if we have fewer than 4 jobs to maintain a buffer
-        if count < 4 and scrape_attempts < max_scrape_attempts:
+
+        # Run scrapers if the queue has dropped below the configured buffer
+        if count < min_queue_size and scrape_attempts < max_scrape_attempts:
             scrape_attempts += 1
-            print(f"DB has fewer than 4 jobs. Running scrapers (attempt {scrape_attempts}/{max_scrape_attempts})...")
-            
-            # Run Jobwebghana scraper
-            scrap_result = jobScrapper()
-            logProcesses(f"Jobweb Scraper run result: {scrap_result}")
-            
-            # If Jobwebghana found nothing or failed, try Jobberman
+            print(f"DB has fewer than {min_queue_size} jobs. Running scrapers (attempt {scrape_attempts}/{max_scrape_attempts})...")
+
+            # Run Jobwebghana scraper if enabled
+            scrap_result = None
+            if sources.get("jobwebghana", True):
+                scrap_result = jobScrapper()
+                logProcesses(f"Jobweb Scraper run result: {scrap_result}")
+
+            # If Jobwebghana is disabled, found nothing, or failed, try Jobberman
             jobweb_no_results = (
-                (isinstance(scrap_result, str) and scrap_result in ("No New Job", "Database Unavailable"))
+                scrap_result is None
+                or (isinstance(scrap_result, str) and scrap_result in ("No New Job", "Database Unavailable"))
                 or (isinstance(scrap_result, dict) and not scrap_result.get("status", True))
             )
-            if jobweb_no_results:
+            if jobweb_no_results and sources.get("jobberman", True):
                 print(f"Jobwebghana returned no new jobs ({scrap_result}). Trying Jobberman...")
                 scrap_result_jb = jobbermanScrapper()
                 logProcesses(f"Jobberman Scraper run result: {scrap_result_jb}")
